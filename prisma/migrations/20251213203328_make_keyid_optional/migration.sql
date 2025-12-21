@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "jwks" ALTER COLUMN "keyId" DROP NOT NULL;
