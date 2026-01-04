@@ -23,6 +23,19 @@ Starter Elysia/Bun backend with Better Auth, Prisma (Postgres), React Email/Rese
 - **Routing**: API served under `/`; routes split by domain in `src/routes`.
 - **Prisma 7 config**: datasource URL lives in `prisma.config.ts` (not `schema.prisma`). Migrations require `DATABASE_URL`; runtime uses the Prisma Postgres adapter (`@prisma/adapter-pg`) with `pg` pool.
 
+```mermaid
+flowchart LR
+  Client[Client / API Consumer] -->|HTTP| Elysia[Elysia App]
+  Elysia --> Routes[Routes: auth/admin/email/system]
+  Routes --> Auth[Better Auth]
+  Routes --> Services[Services: email/tokens/refresh]
+  Auth --> Prisma[Prisma Client]
+  Services --> Prisma
+  Prisma --> Postgres[(Postgres DB)]
+  Services --> Resend[Resend Email API]
+  Elysia --> Docs[/docs OpenAPI/]
+```
+
 ## Features
 - Better Auth (email/password) with JWT/bearer, admin plugin, session/refresh token flows, logout/revoke endpoints, and role sync.
 - Prisma/Postgres schema (users/accounts/sessions/refresh tokens) with seed admin user.
@@ -34,12 +47,13 @@ Starter Elysia/Bun backend with Better Auth, Prisma (Postgres), React Email/Rese
 1. Install Bun 1.3.5+ (recommended via `asdf` with `.tool-versions`), then dependencies: `bun install`
 2. Copy `.env.example` to `.env` and set:
    - Required: `DATABASE_URL`, `JWT_SECRET` (or `BETTER_AUTH_SECRET`, 32+ chars), `APP_ENCRYPTION_KEY` (32-byte base64/hex), `AUTH_BASE_URL`, `CORS_ORIGINS` (explicit origins in prod, not `*`).
-   - Auth/Admin: `ADMIN_ROLE`, `ADMIN_EMAILS`, `EMAIL_VERIFICATION` (send), `EMAIL_VERIFICATION_ENFORCE` (block login until verified), `SIGNUP_RATE_LIMIT_WINDOW_MS`, `SIGNUP_RATE_LIMIT_MAX`.
+   - Auth/Admin: `ADMIN_ROLE`, `ADMIN_EMAILS`, `EMAIL_VERIFICATION` (send), `EMAIL_VERIFICATION_ENFORCE` (block login until verified), `SIGNUP_MIN_PASSWORD_LENGTH`, `SIGNUP_PWNED_CHECKS`, `SIGNUP_RATE_LIMIT_WINDOW_MS`, `SIGNUP_RATE_LIMIT_MAX`.
    - Email: `RESEND_API_KEY`, `EMAIL_FROM` if using emails.
 3. Start Postgres: `docker compose up -d db`
 4. Migrate & seed: `DATABASE_URL=... bunx prisma migrate deploy && bunx prisma db seed` (Prisma 7 reads the URL from `prisma.config.ts` or env; `schema.prisma` no longer contains `url`).
-5. Run: `bun --watch src/index.ts` (or `docker compose up --build`)
-6. Commits: follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0-beta.4/) for commit messages.
+5. Generate Prisma client: `DATABASE_URL=... bun run prisma:generate`
+6. Run: `bun --watch src/index.ts` (or `docker compose up --build`)
+7. Commits: follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0-beta.4/) for commit messages.
 
 ## Key Endpoints (prefix `/`)
 - Auth: `/auth/signup`, `/auth/login`, `/auth/refresh`, `/auth/refresh/revoke`, `/auth/logout`, `/auth/logout-all`, `/auth/session/revoke`, `/auth/sessions`, `/auth/me`
