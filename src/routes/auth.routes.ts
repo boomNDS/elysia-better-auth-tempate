@@ -62,15 +62,22 @@ export const authRouter = new Elysia({ name: "authRoutes" })
 			}
 
 			const { response, headers } = await authService.api.resetPassword({
-				body,
+				body: {
+					token: body.token,
+					newPassword: body.password,
+				},
 				headers: request.headers,
 				returnHeaders: true,
 			});
 
-			set.headers = Object.fromEntries(headers);
+			const responseHeaders: Record<string, string> = {};
+			headers.forEach((value, key) => {
+				responseHeaders[key] = value;
+			});
+			set.headers = responseHeaders;
 
 			return {
-				...response,
+				status: response.status,
 				passwordRecommendations,
 			};
 		},
