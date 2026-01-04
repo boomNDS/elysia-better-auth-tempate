@@ -41,7 +41,39 @@ export const authRouter = new Elysia({ name: "authRoutes" })
 	)
 	.post(
 		"/auth/reset-password",
-		async ({ request }) => authService.handler(request),
+		async ({ body, request, set }) => {
+			const passwordRecommendations: string[] = [];
+			const complexity = checkPasswordComplexity(body.password);
+			if (!complexity.ok) {
+				passwordRecommendations.push(...complexity.errors);
+			}
+
+			if (appConfig.signupPwnedChecks) {
+				try {
+					const pwned = await checkPwnedPassword(body.password);
+					if (pwned.compromised) {
+						passwordRecommendations.push(
+							"avoid known breached passwords",
+						);
+					}
+				} catch {
+					// Best-effort recommendation only.
+				}
+			}
+
+			const { response, headers } = await authService.api.resetPassword({
+				body,
+				headers: request.headers,
+				returnHeaders: true,
+			});
+
+			set.headers = Object.fromEntries(headers);
+
+			return {
+				...response,
+				passwordRecommendations,
+			};
+		},
 		{
 			body: resetPasswordSchema,
 			detail: {
@@ -102,19 +134,23 @@ export const authRouter = new Elysia({ name: "authRoutes" })
 	.post(
 		"/auth/signup",
 		async ({ body, request, set }) => {
+			const passwordRecommendations: string[] = [];
 			const complexity = checkPasswordComplexity(body.password);
 			if (!complexity.ok) {
-				return new Response(`Weak password: ${complexity.errors.join(", ")}`, {
-					status: 400,
-				});
+				passwordRecommendations.push(...complexity.errors);
 			}
 
-			const pwned = await checkPwnedPassword(body.password);
-			if (pwned.compromised) {
-				return new Response(
-					"Password has appeared in data breaches; choose another.",
-					{ status: 400 },
-				);
+			if (appConfig.signupPwnedChecks) {
+				try {
+					const pwned = await checkPwnedPassword(body.password);
+					if (pwned.compromised) {
+						passwordRecommendations.push(
+							"avoid known breached passwords",
+						);
+					}
+				} catch {
+					// Best-effort recommendation only.
+				}
 			}
 
 			const { response, headers } = await authService.api.signUpEmail({
@@ -143,6 +179,7 @@ export const authRouter = new Elysia({ name: "authRoutes" })
 				...response,
 				accessToken,
 				refreshToken,
+				passwordRecommendations,
 				message: appConfig.emailVerification
 					? "Verification email sent. Please verify before signing in."
 					: "Signup successful.",
@@ -296,11 +333,13 @@ export const authRouter = new Elysia({ name: "authRoutes" })
 	.post(
 		"/auth/session/revoke",
 		async (ctx) => {
-			const { request, set } = ctx as typeof ctx & { session: AuthSession };
+			const { request, set, session } = ctx as typeof ctx & {
+				session: AuthSession;
+			};
 
 			const { headers } = await authService.api.revokeSession({
 				headers: request.headers,
-				body: { token: "" },
+				body: { token: session.session.token },
 				returnHeaders: true,
 			});
 

@@ -37,6 +37,12 @@ const decryptAccountField = (value: string | null | undefined) => {
 	return decryptString(value);
 };
 
+type AccountTokenFields = {
+	accessToken?: string | null;
+	refreshToken?: string | null;
+	idToken?: string | null;
+};
+
 const createClient = () => {
 	const baseClient = new PrismaClient({ adapter: new PrismaPg(pool) });
 
@@ -90,7 +96,9 @@ const createClient = () => {
 					query: (args: Prisma.AccountCreateManyArgs) => unknown;
 				}) {
 					if (Array.isArray(args.data)) {
-						args.data = args.data.map((item) => encryptAccountData(item));
+						args.data = args.data.map((item: Prisma.AccountCreateManyInput) =>
+							encryptAccountData(item),
+						);
 					} else if (args.data) {
 						args.data = encryptAccountData(args.data);
 					}
@@ -114,15 +122,18 @@ const createClient = () => {
 			account: {
 				accessToken: {
 					needs: { accessToken: true },
-					compute: (account) => decryptAccountField(account.accessToken),
+					compute: (account: AccountTokenFields) =>
+						decryptAccountField(account.accessToken),
 				},
 				refreshToken: {
 					needs: { refreshToken: true },
-					compute: (account) => decryptAccountField(account.refreshToken),
+					compute: (account: AccountTokenFields) =>
+						decryptAccountField(account.refreshToken),
 				},
 				idToken: {
 					needs: { idToken: true },
-					compute: (account) => decryptAccountField(account.idToken),
+					compute: (account: AccountTokenFields) =>
+						decryptAccountField(account.idToken),
 				},
 			},
 		},

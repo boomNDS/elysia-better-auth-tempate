@@ -16,7 +16,6 @@ export const authService = betterAuth({
 	basePath: appConfig.authBasePath,
 	baseURL: appConfig.authBaseUrl,
 	secret: AUTH_SECRET,
-	cookiePrefix: "elysia",
 	emailAndPassword: {
 		enabled: true,
 		requireEmailVerification: false,
@@ -41,14 +40,17 @@ export const authService = betterAuth({
 				}
 			: undefined,
 	},
-	cookies: {
-		session: {
-			name: "elysia_session",
-			attributes: {
-				httpOnly: true,
-				secure: process.env.NODE_ENV === "production",
-				sameSite: "lax",
-				path: "/",
+	advanced: {
+		cookiePrefix: "elysia",
+		cookies: {
+			session_token: {
+				name: "elysia_session",
+				attributes: {
+					httpOnly: true,
+					secure: process.env.NODE_ENV === "production",
+					sameSite: "lax",
+					path: "/",
+				},
 			},
 		},
 	},

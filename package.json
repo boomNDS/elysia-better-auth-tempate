@@ -18,16 +18,16 @@
 		"seed": "bun run prisma/seed.ts"
 	},
 	"dependencies": {
-		"@elysiajs/cors": "^1.4.0",
+		"@elysiajs/cors": "^1.4.1",
 		"@elysiajs/cron": "^1.4.1",
 		"@elysiajs/jwt": "^1.4.0",
-		"@elysiajs/openapi": "^1.4.12",
+		"@elysiajs/openapi": "^1.4.13",
 		"@prisma/adapter-pg": "^7.2.0",
 		"@prisma/client": "7.2.0",
 		"@react-email/components": "^0.0.26",
-		"@react-email/render": "^2.0.0",
-		"better-auth": "^1.4.7",
-		"elysia": "^1.4.19",
+		"@react-email/render": "^2.0.1",
+		"better-auth": "^1.4.10",
+		"elysia": "^1.4.21",
 		"elysia-logger": "^0.5.2",
 		"elysia-rate-limit": "^1.3.0",
 		"jose": "^6.1.3",
@@ -38,7 +38,7 @@
 		"zod": "^3.25.76"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.3.10",
+		"@biomejs/biome": "^2.3.11",
 		"@react-email/preview-server": "5.0.8",
 		"@types/hibp": "^7.3.0",
 		"@types/node": "^22.19.3",

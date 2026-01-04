@@ -44,6 +44,11 @@ const envSchema = z
 			.enum(["true", "false"])
 			.optional()
 			.transform((v) => v === "true"),
+		SIGNUP_MIN_PASSWORD_LENGTH: z.string().optional(),
+		SIGNUP_PWNED_CHECKS: z
+			.enum(["true", "false"])
+			.optional()
+			.transform((v) => v === "true"),
 		SIGNUP_RATE_LIMIT_WINDOW_MS: z.string().optional(),
 		SIGNUP_RATE_LIMIT_MAX: z.string().optional(),
 		DATABASE_URL: z.string(),

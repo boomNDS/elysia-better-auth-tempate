@@ -33,6 +33,8 @@ export const appConfig = {
 	adminRole: env.ADMIN_ROLE ?? "admin",
 	emailVerification: env.EMAIL_VERIFICATION ?? false,
 	emailVerificationEnforce: env.EMAIL_VERIFICATION_ENFORCE ?? false,
+	signupMinPasswordLength: num(env.SIGNUP_MIN_PASSWORD_LENGTH, 8),
+	signupPwnedChecks: env.SIGNUP_PWNED_CHECKS ?? false,
 	signupRateLimitWindowMs: num(env.SIGNUP_RATE_LIMIT_WINDOW_MS, 60_000),
 	signupRateLimitMax: num(env.SIGNUP_RATE_LIMIT_MAX, 5),
 };
