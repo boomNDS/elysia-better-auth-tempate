@@ -66,6 +66,9 @@ flowchart LR
 - Refresh tokens are hashed and SHA-256 digested with max 5 active per user.
 - Roles: Prisma `User.role` (default `user`); seed creates admin. Admin checks use `ADMIN_ROLE` and optional allowlist (`ADMIN_EMAILS`).
 
+## Contributing
+- Open to contributions and suggestions. Feel free to open issues or PRs.
+
 ## References
 - Elysia best practices: https://elysiajs.com/essential/best-practice
 - Better Auth docs: https://www.better-auth.com/docs/introduction
