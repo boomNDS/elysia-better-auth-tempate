@@ -52,9 +52,7 @@ export const authRouter = new Elysia({ name: "authRoutes" })
 				try {
 					const pwned = await checkPwnedPassword(body.password);
 					if (pwned.compromised) {
-						passwordRecommendations.push(
-							"avoid known breached passwords",
-						);
+						passwordRecommendations.push("avoid known breached passwords");
 					}
 				} catch {
 					// Best-effort recommendation only.
@@ -151,9 +149,7 @@ export const authRouter = new Elysia({ name: "authRoutes" })
 				try {
 					const pwned = await checkPwnedPassword(body.password);
 					if (pwned.compromised) {
-						passwordRecommendations.push(
-							"avoid known breached passwords",
-						);
+						passwordRecommendations.push("avoid known breached passwords");
 					}
 				} catch {
 					// Best-effort recommendation only.

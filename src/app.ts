@@ -61,8 +61,7 @@ export const createApp = () => {
 			rateLimit({
 				duration: rateLimitWindowMs,
 				max: rateLimitMax,
-				responseCode: 429,
-				responseMessage: "Too many requests, slow down.",
+				errorResponse: "Too many requests, slow down.",
 				countFailedRequest: false,
 			}),
 		)
