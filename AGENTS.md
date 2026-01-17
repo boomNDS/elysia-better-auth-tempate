@@ -1,0 +1,20 @@
+<INSTRUCTIONS>
+Use llms/elysia-llms.txt as the primary reference for framework details and conventions.
+Follow the Conventional Commits format when writing commit messages.
+
+Commit format:
+<type>(<scope>): <subject>
+
+Rules:
+- Header is mandatory; keep under 100 chars.
+- Blank line between header/body/footer.
+- Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore.
+- Scope optional. Subject imperative, lowercase, no period.
+- Breaking changes in footer: BREAKING CHANGE: <description>.
+
+Examples:
+feat(auth): add login validation
+fix: resolve memory leak in data stream
+feat(api): remove deprecated v1 endpoints
+BREAKING CHANGE: v1 endpoints removed; use v2
+</INSTRUCTIONS>
